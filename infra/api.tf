@@ -22,6 +22,26 @@ resource "aws_iam_role" "iam_for_lambda" {
   ]
 }
 EOF
+  inline_policy {
+    name = var.api_name
+
+    policy = jsonencode({
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Sid" : "S3",
+          "Effect" : "Allow",
+          "Action" : [
+            "s3:*"
+          ],
+          "Resource" : [
+            "${aws_s3_bucket.data.id}",
+            "${aws_s3_bucket.data.id}/*"
+          ]
+        }
+      ]
+    })
+  }
 }
 
 
@@ -55,6 +75,11 @@ resource "aws_lambda_function" "function" {
     aws_iam_role_policy_attachment.attach_ssm_read_policy,
     aws_cloudwatch_log_group.log_group,
   ]
+  environment {
+    variables = {
+      S3_DATA_BUCKET = aws_s3_bucket.data.id
+    }
+  }
 }
 
 resource "aws_api_gateway_rest_api" "api" {

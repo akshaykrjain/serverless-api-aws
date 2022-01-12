@@ -1,5 +1,6 @@
 'use strict';
-console.log('Loading hello world function');
+const AWS = require('aws-sdk');
+console.log('Loading function');
  
 exports.handler = async (event) => {
     let name = "There";
@@ -14,7 +15,32 @@ exports.handler = async (event) => {
     
  
     let greeting = `Hello ${name} !`;
-   
+
+    // Making an entry in DATA Bucket
+    console.log('The S3 Bucket Name :', process.env.S3_DATA_BUCKET);
+    var s3 = new AWS.S3();
+    var filePath = event.queryStringParameters.name+".txt";
+    fs.writeFileSync(filePath, event.queryStringParameters.name);
+
+    //configuring parameters
+    var params = {
+        Bucket: process.env.S3_DATA_BUCKET,
+        Body : fs.createReadStream(filePath),
+        Key : event.queryStringParameters.name+"/"+Date.now()+"_"+path.basename(filePath)
+    };
+
+    s3.upload(params, function (err, data) {
+        //handle error
+        if (err) {
+          console.log("Error", err);
+        }
+      
+        //success
+        if (data) {
+          console.log("Uploaded in:", data.Location);
+        }
+      });
+
     let responseBody = {
         message: greeting
     };

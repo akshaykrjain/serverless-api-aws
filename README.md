@@ -2,11 +2,26 @@
 
 A sample REST API (WebService) hosted on AWS by using Serverless Technologies
 
+Functionality : This API greets you with the supplied name in query parameter and creates a file in S3 bucket with the supplied name.
+
+
 ## Architecture
+
+![Architecture](draw-io.png)
 
 ## Deployment
 
+Web Service is deployed to AWS by [terraform](infra/).
+
+Github Action [workflow](.github/workflows/CI.yaml) is configured to deploy changes automatically upon every push to main branch. 
+
+### Pre requisites for automatic deployment
+- AWS Credentials with required minimum permission . Configure credentials in Github Secerets. 
+- Terraform Remote Backend. (S3 Bucket & DynamoDB Table)
+
 ## Test
+
+After deployment, get the endpoint url from terraform output and access the web service api.
 
 `curl -i https://xxxxxx.execute-api.eu-west-1.amazonaws.com/prod/?name=Jack`
 
