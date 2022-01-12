@@ -2,12 +2,20 @@
 
 A sample REST API (WebService) hosted on AWS by using Serverless Technologies
 
-Functionality : This API greets you with the supplied name in query parameter and creates a file in S3 bucket with the supplied name.
-
+Functionality: This API greets you with the supplied name in the query parameter and creates a file in the S3 bucket with the supplied 
+name.
 
 ## Architecture
 
 ![Architecture](draw-io.png)
+
+## Resiliency & Scalability
+
+Since we are using managed serverless services, so this architecture gets following benefits
+
+- AZ Failure tolerance
+- Automatic scalable
+- Save costs by paying only for the compute time you use—by per-millisecond—instead of provisioning infrastructure upfront for peak capacity
 
 ## Deployment
 
@@ -16,8 +24,11 @@ Web Service is deployed to AWS by [terraform](infra/).
 Github Action [workflow](.github/workflows/CI.yaml) is configured to deploy changes automatically upon every push to main branch. 
 
 ### Pre requisites for automatic deployment
+
 - AWS Credentials with required minimum permission . Configure credentials in Github Secerets. 
+
 - Terraform Remote Backend. (S3 Bucket & DynamoDB Table)
+
 
 ## Test
 
