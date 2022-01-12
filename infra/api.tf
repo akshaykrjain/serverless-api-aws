@@ -35,8 +35,8 @@ EOF
             "s3:*"
           ],
           "Resource" : [
-            "${aws_s3_bucket.data.id}",
-            "${aws_s3_bucket.data.id}/*"
+            "${aws_s3_bucket.data.arn}",
+            "${aws_s3_bucket.data.arn}/*"
           ]
         }
       ]
