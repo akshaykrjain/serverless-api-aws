@@ -1,7 +1,30 @@
 'use strict';
 const AWS = require('aws-sdk');
 console.log('Loading function');
- 
+let name = "Manual";
+// Making an entry in Data S3 Bucket (Sample to demonstrate how to use S3 Bucket from Lambda)
+console.log('The S3 Bucket Name :', process.env.S3_DATA_BUCKET);
+var file_name = name+"/"+Date.now()+".txt"
+var file_body = "name:"+name+" access_time:"+new Date().toISOString()
+var s3 = new AWS.S3();
+    //configuring parameters
+    var params = {
+        Bucket: process.env.S3_DATA_BUCKET,
+        Body : file_body,
+        Key : file_name
+    };    
+s3.upload(params, function (err, data) {
+    //handle error
+    if (err) {
+        console.log("Error", err);
+    }
+    
+    //success
+    if (data) {
+        console.log("Uploaded in:", data.Location);
+    }
+    });
+
 exports.handler = async (event) => {
     let name = "There";
     
@@ -12,35 +35,33 @@ exports.handler = async (event) => {
         console.log("Received name: " + event.queryStringParameters.name);
         name = event.queryStringParameters.name;
     }
-    
- 
+     
     let greeting = `Hello ${name} !`;
 
-    // Making an entry in DATA Bucket
+    // Making an entry in Data S3 Bucket (Sample to demonstrate how to use S3 Bucket from Lambda)
     console.log('The S3 Bucket Name :', process.env.S3_DATA_BUCKET);
+    var file_name = name+"/"+Date.now()+".txt"
+    var file_body = "name:"+name+" access_time:"+new Date().toISOString()
     var s3 = new AWS.S3();
-    var filePath = event.queryStringParameters.name+".txt";
-    fs.writeFileSync(filePath, event.queryStringParameters.name);
-
-    //configuring parameters
-    var params = {
-        Bucket: process.env.S3_DATA_BUCKET,
-        Body : fs.createReadStream(filePath),
-        Key : event.queryStringParameters.name+"/"+Date.now()+"_"+path.basename(filePath)
-    };
-
+        //configuring parameters
+        var params = {
+            Bucket: process.env.S3_DATA_BUCKET,
+            Body : file_body,
+            Key : file_name
+        };    
     s3.upload(params, function (err, data) {
         //handle error
         if (err) {
-          console.log("Error", err);
+            console.log("Error", err);
         }
-      
+        
         //success
         if (data) {
-          console.log("Uploaded in:", data.Location);
+            console.log("Uploaded in:", data.Location);
         }
-      });
+        });
 
+    // API Response   
     let responseBody = {
         message: greeting
     };
